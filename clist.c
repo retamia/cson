@@ -11,8 +11,9 @@ struct cson_list *init_cson_list() {
         return NULL;
     }
 
-    list->push   = _insert_to_tail;
+    list->push     = _insert_to_tail;
     list->append   = _insert_to_head;
+    list->get      = _get_by_index;
     list->count    = 0;
     list->is_empty = _is_empty;
 
@@ -64,7 +65,7 @@ int _insert_to_head(struct cson_list *list, void *value) {
         node->next = list->head->next;
     }
 
-    node->value = value;
+    node->value    = value;
     node->previous = list->head;
     list->head     = node;
     list->count++;
@@ -97,12 +98,50 @@ int _insert_to_tail(struct cson_list *list, void *value) {
     }
     node->next     = NULL;
     node->value    = value;
+    if (!list->is_empty(list)) {
+        list->tail->next = node;
+    }
     node->previous = list->tail;
     list->tail     = node;
     list->count++;
     return true;
 }
 
+/**
+ *  得到链表索引的值
+ * @param list
+ * @param index
+ * @return
+ */
+void *_get_by_index(struct cson_list *list, const unsigned int index) {
+    if (list == NULL) {
+        return NULL;
+    }
+
+    if (index + 1 > list->count) {
+        return NULL;
+    }
+
+    int              half = list->count / 2;
+    struct cson_node *node;
+    if (index <= half) {
+        node       = list->head;
+        for (int i = 1; i <= index; i++) {
+            node = node->next;
+        }
+    } else {
+        node = list->tail;
+        for (int i = 1; i < list->count - index; i++) {
+            node = node->previous;
+        }
+    }
+    return node->value;
+}
+
+/**
+ * 释放列表内存
+ * @param list
+ */
 void free_list(struct cson_list *list) {
     if (!list->is_empty(list)) {
         struct cson_node *node = list->tail;
