@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -O2 -std=c11")
 
 set(CSON_HEARDER_FILES
         cson.h
-        clist.h)
+        clist.h cmap.h)
 
 set(CSON_SOURCE_FILES
         cson.c
