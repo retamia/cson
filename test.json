@@ -1,0 +1,10 @@
+{
+  "str": "a",
+  "number": 1,
+  "object": {
+    "bool_true": true,
+    "bool_false": false
+  },
+  "nil": null,
+  "array": [1, 2, 3]
+}
