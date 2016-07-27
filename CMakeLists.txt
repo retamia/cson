@@ -9,5 +9,5 @@ set(CSON_HEARDER_FILES
 
 set(CSON_SOURCE_FILES
         cson.c
-        main.c clist.c)
+        main.c clist.c cmap.c)
 add_executable(cson ${CSON_HEARDER_FILES} ${CSON_SOURCE_FILES})

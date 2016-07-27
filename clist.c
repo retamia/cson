@@ -60,13 +60,13 @@ int _insert_to_head(struct cson_list *list, void *value) {
 
     if (list->is_empty(list)) {
         list->tail = node;
-        node->next = list->head;
-    } else {
-        node->next = list->head->next;
+    } else{
+        list->head->previous = node;
     }
 
+    node->next = list->head;
     node->value    = value;
-    node->previous = list->head;
+    node->previous = NULL;
     list->head     = node;
     list->count++;
     return true;
@@ -126,7 +126,7 @@ void *_get_by_index(struct cson_list *list, const unsigned int index) {
     struct cson_node *node;
     if (index <= half) {
         node       = list->head;
-        for (int i = 1; i <= index; i++) {
+        for (int i = 0; i < index; i++) {
             node = node->next;
         }
     } else {
@@ -142,10 +142,11 @@ void *_get_by_index(struct cson_list *list, const unsigned int index) {
  * 释放列表内存
  * @param list
  */
-void free_list(struct cson_list *list) {
+void cson_free_list(struct cson_list *list) {
     if (!list->is_empty(list)) {
         struct cson_node *node = list->tail;
         while (node) {
+            //if(()node->value)
             //todo 如果node是cson_list那就递归调用这个函数
             struct cson_node *prev = node->previous;
             free(node);

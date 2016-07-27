@@ -8,7 +8,7 @@
 #define true 1
 #define false 0
 #define bool int
-typedef struct cson_list *CONS_LIST;
+typedef struct cson_list *CSON_LIST;
 
 typedef int (*insert_to_head)(struct cson_list *, void *);
 
@@ -44,6 +44,6 @@ int _is_empty(struct cson_list *list);
 
 void *_get_by_index(struct cson_list *list, const unsigned int index);
 
-void free_list(struct cson_list *list);
+void cson_free_list(struct cson_list *list);
 
 #endif //CSON_CLIST_H
