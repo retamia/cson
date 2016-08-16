@@ -2,10 +2,11 @@
 #include <stdlib.h>
 #include "clist.h"
 #include "cmap.h"
+#include "cson.h"
 
 
 int main(){
-    CSON_LIST list = init_cson_list();
+    /*CSON_LIST list = init_cson_list();
     list->append(list, (void *)1);
     list->push(list, (void *)2);
     list->push(list, (void *)3);
@@ -30,7 +31,9 @@ int main(){
     printf("map key:%s, value: %d\n", "ccc", (int)map->get(map, "ccc"));
     printf("map key:%s, value: %d\n", "ddd", (int)map->get(map, "ddd"));
 
-    cson_free_map(map);
+    cson_free_map(map);*/
+
+    parse_cson_with_file("/Users/retamia/Dev/c/cson/test.json");
 
     return EXIT_SUCCESS;
 }

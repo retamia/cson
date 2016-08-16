@@ -5,27 +5,43 @@
 #ifndef CSON_CSON_H
 #define CSON_CSON_H
 
+#include "clist.h"
+#include "cmap.h"
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+typedef CSON_MAP CSON_OBJECT;
+typedef struct cson *CSON;
+
 enum cson_type{
     NUMBER,
     STRING,
     ARRAY,
     OBJECT,
     BOOL,
-    NIL,
-    UNKNOWN
+    NIL
 };
 
-struct cson_object {
+struct cson {
     enum cson_type type;
-    char *name;
     union {
-        double number;
-        char *str;
-        struct cson *child;
-    };
+        char *string;
+        union {
+            long i_number;
+            double d_number;
+        } number;
+        CSON_OBJECT object;
+        CSON_LIST array;
+        bool boolean;
+    } *value;
 };
 
-struct cson_object *parse_cson_with_file(const char *filepath);
+CSON_LIST cson_tokenizer(const char *json_str);
 
-struct cson_object *parse_cson(const char *json_str);
+CSON parse_cson_with_file(const char *filepath);
+
+CSON parse_tokens(CSON_LIST tokens);
+
+CSON parse_cson(const char *json_str);
 #endif //CSON_CSON_H

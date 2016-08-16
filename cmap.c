@@ -24,6 +24,7 @@ struct cson_map *init_cson_map() {
     map->contains = _cson_map_contains;
     map->delete   = _cson_map_del;
     map->is_empty = _cson_map_is_empty;
+    map->put_pair = _cson_map_put_pair;
 
     return map;
 }
@@ -51,6 +52,14 @@ void *_cson_map_get(struct cson_map *map, const char *key) {
 
 void _cson_map_del(struct cson_map *map, const char *key) {
 
+}
+
+void _cson_map_put_pair(CSON_MAP map, struct cson_pair *pair){
+    if(pair == NULL){
+        return;
+    }
+
+    map->put(map, pair->key, pair->value);
 }
 
 void _cson_map_put(struct cson_map *map, const char *key, void *value) {

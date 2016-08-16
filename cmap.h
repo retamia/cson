@@ -30,12 +30,15 @@ typedef bool (*cson_map_contains)(struct cson_map *, const char *);
 
 typedef bool (*cson_map_is_empty)(struct cson_map *);
 
+typedef void (*cson_map_put_pair)(CSON_MAP ,struct cson_pair *);
+
 struct cson_map {
     cson_map_get      get;
     cson_map_del      delete;
     cson_map_put      put;
     cson_map_contains contains;
     cson_map_is_empty is_empty;
+    cson_map_put_pair put_pair;
     CSON_LIST         _array[__CSON_CMAP_M];
     u_int16_t         size;
 };
@@ -45,6 +48,8 @@ void *_cson_map_get(struct cson_map *map, const char *key);
 void _cson_map_del(struct cson_map *map, const char *key);
 
 void _cson_map_put(struct cson_map *map, const char *key, void *value);
+
+void _cson_map_put_pair(CSON_MAP map, struct cson_pair *pair);
 
 bool _cson_map_contains(struct cson_map *map, const char *key);
 

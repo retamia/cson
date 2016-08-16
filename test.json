@@ -1,10 +1,19 @@
 {
   "str": "a",
   "number": 1,
+  "negative_number": -1,
   "object": {
     "bool_true": true,
     "bool_false": false
   },
   "nil": null,
-  "array": [1, 2, 3]
+  "array": [
+    1,
+    2,
+    3
+  ],
+  "course": {
+    "id": 1,
+    "title": "课程1"
+  }
 }
