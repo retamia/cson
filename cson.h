@@ -15,7 +15,7 @@ typedef CSON_MAP CSON_OBJECT;
 typedef struct cson *CSON;
 
 enum cson_type{
-    NUMBER,
+    NUMBER = 0,
     STRING,
     ARRAY,
     OBJECT,
@@ -34,7 +34,7 @@ struct cson {
         CSON_OBJECT object;
         CSON_LIST array;
         bool boolean;
-    } *value;
+    } value;
 };
 
 CSON_LIST cson_tokenizer(const char *json_str);
@@ -44,4 +44,8 @@ CSON parse_cson_with_file(const char *filepath);
 CSON parse_tokens(CSON_LIST tokens);
 
 CSON parse_cson(const char *json_str);
+
+CSON_LIST _parse_array(CSON_LIST tokens);
+
+CSON_OBJECT _parse_object(CSON_LIST tokens);
 #endif //CSON_CSON_H

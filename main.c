@@ -6,34 +6,18 @@
 
 
 int main(){
-    /*CSON_LIST list = init_cson_list();
-    list->append(list, (void *)1);
-    list->push(list, (void *)2);
-    list->push(list, (void *)3);
-    list->push(list, (void *)4);
-    list->push(list, (void *)5);
-    list->append(list, (void *)0);
+    CSON json_obj = parse_cson_with_file("/Users/retamia/Dev/c/cson/test.json");
+    CSON_OBJECT object = json_obj->value.object;
 
-    for(unsigned int i =0; i<6;i++){
-        printf("list index:%d, value:%d\n", i, (int)list->get(list, i));
+    CSON str_value = (struct cson*)object->get(object, "str");
+    printf("%s\n", str_value->value.string);
+
+    CSON array_value = (struct cson*)object->get(object, "strings");
+    CSON_LIST array = array_value->value.array;
+    for (unsigned int i = 0; i < array->count; ++i) {
+        CSON item_value = (CSON)array->get(array, i);
+        printf("%s\n", item_value->value.string);
     }
-
-    cson_free_list(list);
-
-    CSON_MAP map = init_cson_map();
-    map->put(map, "aaa", (void *)1);
-    map->put(map, "bbb", (void *)2);
-    map->put(map, "ccc", (void *)3);
-    map->put(map, "ddd", (void *)4);
-
-    printf("map key:%s, value: %d\n", "aaa", (int)map->get(map, "aaa"));
-    printf("map key:%s, value: %d\n", "bbb", (int)map->get(map, "bbb"));
-    printf("map key:%s, value: %d\n", "ccc", (int)map->get(map, "ccc"));
-    printf("map key:%s, value: %d\n", "ddd", (int)map->get(map, "ddd"));
-
-    cson_free_map(map);*/
-
-    parse_cson_with_file("/Users/retamia/Dev/c/cson/test.json");
 
     return EXIT_SUCCESS;
 }

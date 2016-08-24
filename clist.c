@@ -16,6 +16,7 @@ struct cson_list *init_cson_list() {
     list->get      = _get_by_index;
     list->count    = 0;
     list->is_empty = _is_empty;
+    list->pop      = _cson_pop;
 
     list->head = NULL;
     list->tail = NULL;
@@ -60,11 +61,11 @@ int _insert_to_head(struct cson_list *list, void *value) {
 
     if (list->is_empty(list)) {
         list->tail = node;
-    } else{
+    } else {
         list->head->previous = node;
     }
 
-    node->next = list->head;
+    node->next     = list->head;
     node->value    = value;
     node->previous = NULL;
     list->head     = node;
@@ -138,12 +139,26 @@ void *_get_by_index(struct cson_list *list, const unsigned int index) {
     return node->value;
 }
 
+void *_cson_pop(CSON_LIST list) {
+    if (list->count == 0) {
+        return NULL;
+    }
+
+    list->count--;
+
+    struct cson_node *node = list->head;
+    list->head = list->head->next;
+    void *value = node->value;
+    free(node);
+    return value;
+}
+
 /**
  * 释放列表内存
  * @param list
  */
 void cson_free_list(struct cson_list *list) {
-    if (!list->is_empty(list)) {
+    /*if (!list->is_empty(list)) {
         struct cson_node *node = list->tail;
         while (node) {
             //if(()node->value)
@@ -152,7 +167,7 @@ void cson_free_list(struct cson_list *list) {
             free(node);
             node = prev;
         }
-    }
+    }*/
     free(list);
     list = NULL;
 }

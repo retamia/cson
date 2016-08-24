@@ -1,6 +1,7 @@
 //
 // Created by retamia on 16/7/13.
 //
+
 #include "cson.h"
 
 int scan_null(const char *json_str) {
@@ -61,12 +62,95 @@ char *scan_natural(const char *json_str) {
     return token;
 }
 
+char *_convertStringToken(const char *str) {
+
+    if (str[0] != '"') {
+        perror("convert string token error");
+        exit(EXIT_FAILURE);
+    }
+
+    size_t len  = strlen(str);
+    char   *ret = malloc((len - 2) * sizeof(char));
+
+    if (ret == NULL) {
+        perror("run out of memory");
+        exit(EXIT_FAILURE);
+    }
+
+    memcpy(ret, str + 1, len - 2);
+    ret[len - 2] = '\0';
+    return ret;
+}
+
+CSON _parse_value(const char *value, CSON_LIST tokens) {
+    CSON cson_value = (CSON) malloc(sizeof(struct cson));
+
+    if (value[0] == '"') {
+        cson_value->type = STRING;
+        char *str_val = _convertStringToken(value);
+        cson_value->value.string = str_val;
+    } else if (value[0] == '{') {
+        cson_value->type = OBJECT;
+        CSON_OBJECT cson_sub_object = _parse_object(tokens);
+        cson_value->value.object = cson_sub_object;
+    } else if (value[0] == 'n') {
+        cson_value->type = NIL;
+        //cson_value->value = NULL;
+    } else if (value[0] == '[') {
+        cson_value->type        = ARRAY;
+        cson_value->value.array = _parse_array(tokens);
+    } else if (value[0] == 't') {
+        cson_value->type          = BOOL;
+        cson_value->value.boolean = true;
+    } else if (value[0] == 'f') {
+        cson_value->type          = BOOL;
+        cson_value->value.boolean = false;
+    }
+    // TODO parse number value
+
+    return cson_value;
+}
+
 CSON_OBJECT _parse_object(CSON_LIST tokens) {
-    CSON_OBJECT cson_object = 
+    CSON_OBJECT cson_object = init_cson_map();
+
+    char *first;
+    while (strcmp("}", first = (char *) tokens->pop(tokens)) != 0) {
+        char *key   = first;
+        char *colon = (char *) tokens->pop(tokens);
+        char *value = (char *) tokens->pop(tokens);
+
+        if (strcmp(":", colon) != 0) {
+            perror("parse json object colon error");
+            exit(EXIT_FAILURE);
+        }
+
+        if (key[0] != '"') {
+            perror("parse json object key error");
+            exit(EXIT_FAILURE);
+        }
+
+        char *new_key = _convertStringToken(key);
+        free(key);
+        CSON cson_value = _parse_value(value, tokens);
+
+        cson_object->put(cson_object, new_key, cson_value);
+    }
+
+    return cson_object;
 }
 
 CSON_LIST _parse_array(CSON_LIST tokens) {
+    CSON_LIST list = init_cson_list();
 
+    char *first;
+    while (strcmp("]", first = (char *) tokens->pop(tokens)) != 0) {
+        char *value     = first;
+        CSON cson_value = _parse_value(value, tokens);
+        list->push(list, cson_value);
+    }
+
+    return list;
 }
 
 CSON_LIST cson_tokenizer(const char *json_str) {
@@ -138,29 +222,32 @@ CSON_LIST cson_tokenizer(const char *json_str) {
 
 CSON parse_cson(const char *json_str) {
     CSON_LIST tokens = cson_tokenizer(json_str);
-    CSON      cson   = parse_tokens(tokens);
+
+    for (int i = 0; i < tokens->count; ++i) {
+        printf("[DEBUG] token: %s\n", (char *) tokens->get(tokens, i));
+    }
+
+    CSON cson = parse_tokens(tokens);
     cson_free_list(tokens);
     return cson;
 }
 
 CSON parse_tokens(CSON_LIST tokens) {
-    struct cson_node *node = tokens->head;
-    char             *token;
-    CSON             cson  = (CSON) malloc(sizeof(struct cson));
+    char *start = (char *) tokens->pop(tokens);
+    CSON cson   = (CSON) malloc(sizeof(struct cson));
 
     if (cson == NULL) {
         perror("init cson error, run out of memory");
     }
 
-    cson->type  = NIL;
-    cson->value = NULL;
+    cson->type = NIL;
 
-    if (strcmp((char *) node->value, "{") == 0) {
-        cson->type          = OBJECT;
-        cson->value->object = _parse_object(tokens);
-    } else if (strcmp((char *) node->value, "[") == 0) {
-        cson->type         = ARRAY;
-        cson->value->array = _parse_array(tokens);
+    if (strcmp(start, "{") == 0) {
+        cson->type         = OBJECT;
+        cson->value.object = _parse_object(tokens);
+    } else if (strcmp(start, "[") == 0) {
+        cson->type        = ARRAY;
+        cson->value.array = _parse_array(tokens);
     } else {
         perror("parser error");
         exit(EXIT_FAILURE);
