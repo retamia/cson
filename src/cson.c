@@ -70,14 +70,14 @@ char *_convertStringToken(const char *str) {
     }
 
     size_t len  = strlen(str);
-    char   *ret = malloc((len - 2) * sizeof(char));
+    char   *ret = malloc((len - 1) * sizeof(char));
 
     if (ret == NULL) {
         perror("run out of memory");
         exit(EXIT_FAILURE);
     }
 
-    memcpy(ret, str + 1, len - 2);
+    memcpy(ret, str + 1, len);
     ret[len - 2] = '\0';
     return ret;
 }
