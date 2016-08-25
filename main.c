@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "cson.h"
+#include "src/cson.h"
 
 
 int main(){
-    CSON json_obj = parse_cson_with_file("/Users/retamia/Dev/c/cson/test.json");
+    CSON json_obj = parse_cson("{\"str\": \"test\", \"nil\": null, \"strings\": [ \"a\", \"b\", \"c\" ] }");
     CSON_OBJECT object = json_obj->value.object;
 
     CSON str_value = (CSON)object->get(object, "str");
